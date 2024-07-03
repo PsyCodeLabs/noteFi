@@ -13,7 +13,7 @@ const canto_testnet = {
 }
 
 const metadata = {
-    name: 'dOptions',
+    name: 'noteFi',
     description: 'A truly decentralized Options marketplace',
     url: 'http://localhost:3000',
     icons: ['https://avatars.localhost:3000/']
