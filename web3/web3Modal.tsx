@@ -2,7 +2,7 @@
 
 import { createWeb3Modal, defaultConfig } from '@web3modal/ethers/react'
 
-const projectId = "def43d1c2ec1fb6d4df35ea7325dd752";
+const projectId = "efbb82bbd6fed87deab04de00f9f9e4d";
 
 const canto_testnet = {
     chainId: 7701,
@@ -14,9 +14,9 @@ const canto_testnet = {
 
 const metadata = {
     name: 'noteFi',
-    description: 'A truly decentralized Options marketplace',
-    url: 'http://localhost:3000',
-    icons: ['https://avatars.localhost:3000/']
+    description: 'A truly decentralized options platform on Canto',
+    url: 'https://note-fi.vercel.app/',
+    icons: ['https://note-fi.vercel.app/']
 }
 
 const ethersConfig = defaultConfig({
