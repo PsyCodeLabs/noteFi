@@ -7,7 +7,7 @@ import {Web3Modal} from '../web3/web3Modal';
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "dOptions",
+  title: "noteFi",
   description: "A truly decentralized Options marketplace",
 };
 

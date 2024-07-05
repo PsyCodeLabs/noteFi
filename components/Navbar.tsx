@@ -52,7 +52,7 @@ export default function Navbar({ className }: { className?: string }) {
               <li className="relative">
                 <div className="flex items-center">
                   <div
-                    className={`block py-2 pr-4 pl-3 text-gray-400 border-b border-gray-700 hover:bg-gray-800 lg:hover:bg-transparent lg:border-0 lg:hover:text-emerald-400 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-800 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700 ${dropdownOpen ? 'text-emerald-400' : ''}`}
+                    className={`cursor-pointer block py-2 pr-4 pl-3 text-gray-400 border-b border-gray-700 hover:bg-gray-800 lg:hover:bg-transparent lg:border-0 lg:hover:text-emerald-400 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-800 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700 ${dropdownOpen ? 'text-emerald-400' : ''}`}
                     onClick={toggleDropdown}
                   >
                     Options
@@ -90,7 +90,7 @@ export default function Navbar({ className }: { className?: string }) {
               </li>
               <Link href="/positions">
               <li>
-                <div href="" className="block py-2 pr-4 pl-3 text-gray-400 border-b border-gray-700 hover:bg-gray-800 lg:hover:bg-transparent lg:border-0 lg:hover:text-emerald-400 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-800 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700">
+                <div className="block py-2 pr-4 pl-3 text-gray-400 border-b border-gray-700 hover:bg-gray-800 lg:hover:bg-transparent lg:border-0 lg:hover:text-emerald-400 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-800 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700">
                   Positions
                 </div>
               </li>
