@@ -3,7 +3,7 @@ import { callOptionABI } from '@/web3/CallOptionABI';
 import { optionFactoryABI } from '@/web3/OptionFactoryABI';
 import { putOptionABI } from '@/web3/PutOptionABI';
 import { erc20ABI } from '@/web3/ERC20ABI';
-import { formatTimestamp } from '../options/buy/interactions';
+import { formatTimestamp } from '../buy/interactions';
 import { optionFactory, noteAddress, tokenMapping } from '@/web3/constants';
 
 export interface PositionData {
