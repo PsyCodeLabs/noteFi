@@ -8,7 +8,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "noteFi",
-  description: "A truly decentralized Options marketplace",
+  description: "A Truly Decentralized Options Marketplace On Canto 🚀",
 };
 
 export default function RootLayout({

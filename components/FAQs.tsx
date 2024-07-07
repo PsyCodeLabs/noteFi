@@ -26,7 +26,7 @@ const initialFAQItems: FAQItem[] = [
     },
     {
       question: 'How secure is noteFi?',
-      answer: 'Security is paramount at noteFi. We implement robust encryption standards and follow best practices to safeguard your personal and financial information. Your data privacy is our top priority.',
+      answer: 'Security is paramount at noteFi. We implement robust testing standards and follow best practices to safeguard our smart contracts and frontend. Smart contracts are yet to be audited so please make your investment decisions accordingly!',
       isOpen: false
     },
   ];
