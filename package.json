@@ -17,6 +17,8 @@
     "axios": "^1.7.2",
     "clsx": "^2.1.1",
     "ethers": "^6.12.1",
+    "flowbite": "^2.4.1",
+    "flowbite-react": "^0.10.1",
     "framer-motion": "^11.2.13",
     "mini-svg-data-uri": "^1.4.4",
     "next": "14.2.3",

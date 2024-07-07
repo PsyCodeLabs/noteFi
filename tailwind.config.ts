@@ -12,7 +12,11 @@ module.exports = {
 
     // Or if using `src` directory:
     "./src/**/*.{js,ts,jsx,tsx,mdx}",
+    "./node_modules/flowbite-react/lib/**/*.js",
+    "./pages/**/*.{ts,tsx}",
+    "./public/**/*.html",
   ],
+
   theme: {
     extend: {
       boxShadow: {
@@ -35,6 +39,7 @@ module.exports = {
     },
   },
   plugins: [
+    require("flowbite/plugin"),
     addVariablesForColors,
     function ({ matchUtilities, theme }: any) {
       matchUtilities(
