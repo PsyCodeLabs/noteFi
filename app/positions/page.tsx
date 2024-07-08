@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { useWeb3ModalProvider, useWeb3ModalAccount } from '@web3modal/ethers/react';
 import { getPositions, executeOption, withdrawOption, PositionData } from './interactions';
 import LoadingScreen from "@/components/LoadingScreen";
-import { BackgroundGradient } from '@/components/ui/background-gradient';
 import { updatePrices } from '@/web3/Prices';
 
 const PositionsPage = () => {
@@ -51,7 +50,6 @@ const PositionsPage = () => {
 
   const renderPosition = (position: PositionData) => (
     <div className="my-8">
-      <BackgroundGradient>
     <div className="bg-gray-900 p-6 rounded-md text-white shadow-md">
     <div className="text-xl font-semibold">
       <span>{position.tokenName}</span> {' '}
@@ -85,7 +83,6 @@ const PositionsPage = () => {
         ) : ""}
       </div>
     </div>
-    </BackgroundGradient>
     </div>
   );
 
