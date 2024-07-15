@@ -1,12 +1,16 @@
-// LoadingScreen.tsx
 import React from 'react';
 
-const LoadingScreen: React.FC = () => {
+interface LoadingScreenProps {
+  message: string;
+}
+
+const LoadingScreen: React.FC<LoadingScreenProps> = ({ message }) => {
   return (
-    <div className="fixed inset-0 bg-black flex flex-col items-center justify-center z-50">
-      <div className="animate-spin rounded-full h-32 w-32 border-t-4 border-b-4 border-gray-900"></div>
-      <p className="text-white mt-5 animate-pulse text-l">Please Confirm Transactions If Any</p>
-      <p className="text-white mt-5 animate-pulse text-4xl">...</p>
+    <div className="flex flex-col items-center justify-center h-screen bg-gray-800">
+      <div className="w-12 h-12 border-8 border-emerald-600 relative animate-loader rounded-md">
+        <div className="absolute top-0 left-0 w-full bg-emerald-600 h-full animate-loader2" />
+      </div>
+      <p className="text-emerald-600 mt-4 text-lg font-semibold animate-pulse">{message}</p>
     </div>
   );
 };

@@ -19,6 +19,21 @@ module.exports = {
 
   theme: {
     extend: {
+      keyframes: {
+        loader: {
+          '0%': { transform: 'rotate(0deg)' },
+          '25%, 50%': { transform: 'rotate(180deg)' },
+          '75%, 100%': { transform: 'rotate(360deg)' }
+        },
+        loader2: {
+          '0%, 25%, 100%': { height: '0%' },
+          '50%, 75%': { height: '100%' }
+        }
+      },
+      animation: {
+        loader: 'loader 3s infinite ease-in-out',
+        loader2: 'loader2 3s infinite ease-in-out'
+      },
       colors:{
         base: '#001321',
         primary: '#047956',
@@ -27,19 +42,6 @@ module.exports = {
         input: `0px 2px 3px -1px rgba(0,0,0,0.1), 0px 1px 0px 0px rgba(25,28,33,0.02), 0px 0px 0px 1px rgba(25,28,33,0.08)`,
       },
       
-        "animation": {
-          shimmer: "shimmer 2s linear infinite"
-        },
-        "keyframes": {
-          shimmer: {
-            from: {
-              "backgroundPosition": "0 0"
-            },
-            to: {
-              "backgroundPosition": "-200% 0"
-            }
-          }
-        }
     },
   },
   plugins: [

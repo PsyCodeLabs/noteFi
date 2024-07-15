@@ -10,8 +10,8 @@ const PositionsPage = () => {
   const { walletProvider } = useWeb3ModalProvider();
   const [activeTab, setActiveTab] = useState<'active' | 'closed'>('active');
   const [positionsData, setPositionsData] = useState<{ active: PositionData[], closed: PositionData[] }>({ active: [], closed: [] });
-  const [loading, setLoading] = useState(false);
-
+  const [loading, setLoading] = useState<boolean>(false);
+  const [loadingMessage, setLoadingMessage] = useState<string>("");
   useEffect(() => {
     if (isConnected && walletProvider) {
       (async () => {
@@ -23,6 +23,7 @@ const PositionsPage = () => {
   const fetchPositions = async () => {
     try {
       setLoading(true);
+      setLoadingMessage("Loading Positions...")
       const data = await getPositions(address, walletProvider, chainId);
       if (typeof data === 'string') {
         console.error(data);
@@ -33,19 +34,33 @@ const PositionsPage = () => {
     } catch (error) {
       console.error(error);
       setLoading(false);
+      setLoadingMessage('');
     }
   }
   
 
   const onExecuteClick = async (addr: string, call: boolean) => {
-    await updatePrices(walletProvider);
-    await executeOption(walletProvider, chainId, addr, call);
-    await fetchPositions();
+    setLoading(true);
+    setLoadingMessage("Executing option, please confirm the transaction...");
+    try {
+      await executeOption(walletProvider, chainId, addr, call);
+      await fetchPositions();
+    } catch (error) {
+      console.error("Execution failed:", error);
+    } finally {
+      setLoading(false);
+      setLoadingMessage('');
+    }
   }
 
   const onWithdrawClick = async (addr: string, call: boolean, bought: boolean) => {
+    setLoading(true);
+    setLoadingMessage("")
+    setLoadingMessage("Withdrawing option, please confirm the transaction...");
     await withdrawOption(walletProvider, chainId, addr, call, bought);
     await fetchPositions();
+    setLoading(false);
+    setLoadingMessage('');
   }
 
   const renderPosition = (position: PositionData) => (
@@ -88,7 +103,7 @@ const PositionsPage = () => {
 
   return (
     <div className="p-4 md:p-8 bg-black min-h-full mt-32 m-8">
-      {loading && <LoadingScreen />}  {/* Conditionally render the loading screen */}
+      {loading && <LoadingScreen message={loadingMessage} />}
       {!loading && (
         <>
           <div className="mb-4 border-b border-gray-700">

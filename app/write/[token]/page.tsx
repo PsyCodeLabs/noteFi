@@ -23,15 +23,18 @@ const OptionForm: React.FC<Props> = ({ params }) => {
   const [quantity, setQuantity] = useState('');
   const [livePrice, setLivePrice] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState('');
 
   const ticker : { [key : string] : string } = {
     "ethereum" : "ETH",
     "wcanto" : "WCANTO"
   };
+  
 
   useEffect(() => {
     (async () => {
       setLoading(true);
+      setLoadingMessage('');
       try {
         const _price: any = await priceMulti(params.token.toLowerCase());
         setLivePrice(_price);
@@ -88,7 +91,7 @@ const OptionForm: React.FC<Props> = ({ params }) => {
   return (
     <div className="fixed inset-0 bg-no-repeat bg-cover bg-center"
       style={{ backgroundImage: `url(${svg3.src})` }}>
-      {loading && <LoadingScreen />}
+      {loading && <LoadingScreen message={loadingMessage}/>}
       {!loading && (
       <div className="max-w-xl mx-auto mt-24 px-4">
         <h1 className="text-2xl px-4 md:text-3xl lg:text-4xl font-bold max-w-4xl leading-relaxed lg:leading-snug text-center mx-auto mb-4 text-gray-200">{ticker[params.token.toLowerCase()]} Price: ${livePrice.toFixed(2)}</h1>

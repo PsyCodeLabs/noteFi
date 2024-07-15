@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useState, useEffect } from 'react';
 import { getOptions, onBuy, OptionData } from './interactions';
 import { useWeb3ModalProvider, useWeb3ModalAccount } from '@web3modal/ethers/react';
@@ -10,7 +9,8 @@ const Page = () => {
   const { address, chainId, isConnected } = useWeb3ModalAccount();
   const { walletProvider } = useWeb3ModalProvider();
   const [chain, setChain] = useState(80002);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [loadingMessage, setLoadingMessage] = useState<string>("");
   const [optionsData, setOptionsData] = useState<{ calls: OptionData[], puts: OptionData[] }>({
     calls: [],
     puts: []
@@ -27,27 +27,38 @@ const Page = () => {
   const fetchOptions = async () => {
     try {
       setLoading(true);
+      setLoadingMessage("Fetching Options...")
       const data : any = await getOptions(address, walletProvider, chainId);
       setOptionsData(data);
       setLoading(false);
     } catch (error) {
       console.error(error);
       setLoading(false);
+      setLoadingMessage('');
     }
   }
 
-  const onBuyClick = async (addr : string, call : boolean) => {
+  const onBuyClick = async (addr: string, call: boolean) => {
     setLoading(true);
-    await onBuy(walletProvider, chainId, addr, call);
-    setLoading(false);
-    await fetchOptions();
+    setLoadingMessage("Processing purchase, please confirm the transaction...");
+    try {
+      await onBuy(walletProvider, chainId, addr, call);
+      setLoadingMessage("Updating options...");
+      await fetchOptions();
+    } catch (error) {
+      console.error("Failed to buy option:", error);
+      setLoadingMessage("Failed to process transaction, please try again.");
+    } finally {
+      setLoading(false);
+      setLoadingMessage('');
+    }
   }
 
   return (
-    <div className="flex flex-row h-screen bg-black bg-dot-white/[0.2] text-white pt-32">
-      {loading && <LoadingScreen />}  {/* Conditionally render the loading screen */}
+    <>
+      {loading && <LoadingScreen message={loadingMessage} />}  {/* Conditionally render the loading screen */}
       {!loading && (
-        <>
+        <div className='flex flex-row h-screen bg-black bg-dot-white/[0.2] text-white pt-32'>
           {/* Call Options Side */}
           <div className="w-1/2 overflow-hidden p-4">
             <h2 className="text-2xl font-bold mb-4 text-green-500 w-full text-center"></h2>
@@ -123,9 +134,9 @@ const Page = () => {
               </div>
             </div>
           </div>
-        </>
+        </div>
       )}
-    </div>
+    </>
   );
 }
 
