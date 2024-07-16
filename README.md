@@ -9,6 +9,13 @@ This repository contains front-end client code for the protocol. It is created i
 
 ## Getting Started
 
+### Requirements
+
+- git
+- node & npm
+
+### Basic Setup
+
 ```sh
 git clone https://github.com/PsyCodeLabs/noteFi.git
 cd noteFi
