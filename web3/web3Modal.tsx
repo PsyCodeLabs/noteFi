@@ -31,7 +31,12 @@ createWeb3Modal({
     chains: [canto_testnet],
     projectId,
     enableAnalytics: true,
-    enableOnramp: true
+    enableOnramp: true,
+    themeVariables: {
+        '--w3m-color-mix': '#001321',
+        '--w3m-color-mix-strength': 40,
+        '--w3m-accent': '#047956'
+      }
 })
 
 export function Web3Modal({ children } : any) {
