@@ -34,13 +34,14 @@ const OptionForm: React.FC<Props> = ({ params }) => {
   useEffect(() => {
     (async () => {
       setLoading(true);
-      setLoadingMessage('');
+      setLoadingMessage("Fetching Price...")
       try {
         const _price: any = await priceMulti(params.token.toLowerCase());
         setLivePrice(_price);
       } catch (error) {
         console.error(error);
       } finally {
+        setLoadingMessage('')
         setLoading(false);
       }
     })();
@@ -60,6 +61,7 @@ const OptionForm: React.FC<Props> = ({ params }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setLoadingMessage("Writing option, please confirm (3) transactions...")
     try {
       if (!strikePrice || !premium || !expiration || !quantity) {
         alert('All fields are required.');
@@ -82,8 +84,10 @@ const OptionForm: React.FC<Props> = ({ params }) => {
       console.log('Form Data:', formData);
       await createOptionCall(formData, walletProvider, chainId);
     } catch (error) {
+      alert("Something went wrong!, please try again or contact support")
       console.error(error);
     } finally {
+      setLoadingMessage('')
       setLoading(false);
     }
   };
