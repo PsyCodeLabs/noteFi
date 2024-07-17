@@ -45,10 +45,10 @@ export default function Navbar() {
           <span className="self-center text-2xl font-semibold whitespace-nowrap text-white">noteFi</span>
         </div>
         <div className="flex items-center lg:order-2">
-          <div className="px-4">
+          <div className="">
             <w3m-button label="Connect Wallet" /> {/* Assuming w3m-button is a component you have */}
           </div>
-          <button className="inline-flex items-center p-2 ml-3 text-sm text-gray-400 rounded-lg md:hidden hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-600"
+          <button className="inline-flex items-center p-1.5 hover:bg-gray-700 text-sm text-gray-400 rounded-lg md:hidden"
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
               <span className="sr-only">Open main menu</span>
               <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
