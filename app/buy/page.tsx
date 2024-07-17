@@ -8,7 +8,6 @@ import LoadingScreen from "@/components/LoadingScreen";
 const Page = () => {
   const { address, chainId, isConnected } = useWeb3ModalAccount();
   const { walletProvider } = useWeb3ModalProvider();
-  const [chain, setChain] = useState<number>(80002);
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingMessage, setLoadingMessage] = useState<string>("");
   const [optionsData, setOptionsData] = useState<{ calls: OptionData[], puts: OptionData[] }>({
