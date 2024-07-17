@@ -43,6 +43,7 @@ const PositionsPage = () => {
     setLoading(true);
     setLoadingMessage("Executing option, please confirm the transaction...");
     try {
+      await updatePrices(walletProvider);
       await executeOption(walletProvider, chainId, addr, call);
       await fetchPositions();
     } catch (error) {

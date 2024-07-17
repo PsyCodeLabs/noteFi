@@ -1,5 +1,5 @@
 import { BrowserProvider, Contract, parseEther } from 'ethers';
-import { erc20ABI } from '@/web3/ERC20ABI';
+import { erc20ABI } from '@/web3/abi/ERC20ABI';
 
 const amoyTokens = [
     '0xB1b104D79dE24513338bdB6CB9Df468110010E5F',

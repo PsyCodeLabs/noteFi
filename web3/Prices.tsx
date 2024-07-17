@@ -1,5 +1,5 @@
 import { BrowserProvider, Contract } from "ethers";
-import { pythABI } from "./PythABI";
+import { pythABI } from "@/web3/abi/PythABI"
 import {PriceServiceConnection} from "@pythnetwork/price-service-client";
 import axios from 'axios';
 
