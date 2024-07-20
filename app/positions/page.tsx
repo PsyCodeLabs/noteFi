@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { useWeb3ModalProvider, useWeb3ModalAccount } from '@web3modal/ethers/react';
 import { getPositions, executeOption, withdrawOption, PositionData } from './interactions';
 import LoadingScreen from "@/components/LoadingScreen";
-import { updatePrices } from '@/web3/Prices';
 
 const PositionsPage = () => {
   const { address, chainId, isConnected } = useWeb3ModalAccount();
@@ -41,12 +40,12 @@ const PositionsPage = () => {
 
   const onExecuteClick = async (addr: string, call: boolean) => {
     setLoading(true);
-    setLoadingMessage("Executing option, please confirm the transaction...");
+    setLoadingMessage("Executing option, please confirm (3) transactions...");
     try {
-      await updatePrices(walletProvider);
       await executeOption(walletProvider, chainId, addr, call);
       await fetchPositions();
     } catch (error) {
+      alert("Something went wrong, check console for details");
       console.error("Execution failed:", error);
     } finally {
       setLoading(false);
@@ -54,14 +53,19 @@ const PositionsPage = () => {
     }
   }
 
-  const onWithdrawClick = async (addr: string, call: boolean, bought: boolean) => {
+  const onWithdrawClick = async (addr: string, expired: boolean, call: boolean, bought: boolean) => {
     setLoading(true);
-    setLoadingMessage("")
-    setLoadingMessage("Withdrawing option, please confirm the transaction...");
-    await withdrawOption(walletProvider, chainId, addr, call, bought);
-    await fetchPositions();
-    setLoading(false);
-    setLoadingMessage('');
+    setLoadingMessage("Withdrawing option, please confirm (1) transaction...");
+    try {
+      await withdrawOption(walletProvider, expired, addr, call, bought);
+      await fetchPositions();
+    } catch (error) {
+      alert("Something went wrong, check console for details");
+      console.error("Execution failed:", error);
+    } finally {
+      setLoading(false);
+      setLoadingMessage('');
+    }
   }
 
   const renderPosition = (position: PositionData) => (
@@ -103,13 +107,13 @@ const PositionsPage = () => {
 
       
       <div className="mt-2">
-        {position.positionType === 'Bought' && activeTab == "active" ? (
+        {position.positionType === 'Bought' && activeTab == "active" && (position.rawExpiration * 1000 > Date.now()) ? (
           <button className="bg-emerald-500 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded" onClick={() => onExecuteClick(position.contractAddr, position.type === 'CALL')}>
             Execute
           </button>
         ) : "" }
-        {activeTab == 'active' && position.positionType != 'Bought' && activeTab == "active" ? (
-          <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onClick={() => onWithdrawClick(position.contractAddr, position.type === 'CALL', position.bought)}>
+        {position.positionType != 'Bought' && activeTab == 'active' && (!position.bought || (position.rawExpiration * 1000 < Date.now())) ? (
+          <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onClick={() => onWithdrawClick(position.contractAddr, position.rawExpiration * 1000 < Date.now(),position.type === 'CALL', position.bought)}>
             Withdraw
           </button>
         ) : ""}

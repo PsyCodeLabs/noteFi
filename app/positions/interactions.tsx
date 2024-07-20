@@ -5,6 +5,7 @@ import { putOptionABI } from '@/web3/abi/PutOptionABI';
 import { erc20ABI } from '@/web3/abi/ERC20ABI';
 import { formatTimestamp } from '../buy/interactions';
 import { optionFactory, noteAddress, tokenMapping } from '@/web3/constants';
+import { updatePrices } from '@/web3/Prices';
 
 export interface PositionData {
   contractAddr: string;
@@ -52,15 +53,15 @@ export const getPositions = async (address : any, walletProvider: any, chainId: 
           let _executed = await _callContract.executed()
           if(_executed == false) {
             if(_buyer == address) {
-                activePositions.push({contractAddr: callOptions[i], tokenName: tokenMapping[_asset], strikePrice: _strikePrice, type: 'CALL', quantity: _quantity, expiration: _expiration, premiumPaid: _premium, positionType: 'Bought', bought: true, executed: false, rawExpiration: _raw })
+                activePositions.push({contractAddr: callOptions[i], tokenName: tokenMapping[_asset], strikePrice: _strikePrice, type: 'CALL', quantity: _quantity, expiration: _expiration, premiumPaid: _premium, positionType: 'Bought', bought: true, executed: false, rawExpiration: Number(_raw) })
             } else {
-                activePositions.push({contractAddr: callOptions[i], tokenName: tokenMapping[_asset], strikePrice: _strikePrice, type: 'CALL', quantity: _quantity, expiration: _expiration, premiumPaid: _premium, positionType: 'Written', bought: _buyer != "0x0000000000000000000000000000000000000000", executed: false, rawExpiration: _raw })
+                activePositions.push({contractAddr: callOptions[i], tokenName: tokenMapping[_asset], strikePrice: _strikePrice, type: 'CALL', quantity: _quantity, expiration: _expiration, premiumPaid: _premium, positionType: 'Written', bought: _buyer != "0x0000000000000000000000000000000000000000", executed: false, rawExpiration: Number(_raw) })
             }
           } else {
             if(_buyer == address) {
-                closedPositions.push({contractAddr: callOptions[i], tokenName: tokenMapping[_asset], strikePrice: _strikePrice, type: 'CALL', quantity: _quantity, expiration: _expiration, premiumPaid: _premium, positionType: 'Bought', bought: true, executed: true, rawExpiration: _raw })
+                closedPositions.push({contractAddr: callOptions[i], tokenName: tokenMapping[_asset], strikePrice: _strikePrice, type: 'CALL', quantity: _quantity, expiration: _expiration, premiumPaid: _premium, positionType: 'Bought', bought: true, executed: true, rawExpiration: Number(_raw) })
             } else {
-                closedPositions.push({contractAddr: callOptions[i], tokenName: tokenMapping[_asset], strikePrice: _strikePrice, type: 'CALL', quantity: _quantity, expiration: _expiration, premiumPaid: _premium, positionType: 'Written', bought: _buyer != "0x0000000000000000000000000000000000000000", executed: true, rawExpiration: _raw })
+                closedPositions.push({contractAddr: callOptions[i], tokenName: tokenMapping[_asset], strikePrice: _strikePrice, type: 'CALL', quantity: _quantity, expiration: _expiration, premiumPaid: _premium, positionType: 'Written', bought: _buyer != "0x0000000000000000000000000000000000000000", executed: true, rawExpiration: Number(_raw) })
             }
           }
         }
@@ -86,15 +87,15 @@ export const getPositions = async (address : any, walletProvider: any, chainId: 
           let _executed = await _callContract.executed()
           if(_executed == false) {
             if(_buyer == address) {
-                activePositions.push({contractAddr: putOptions[i], tokenName: tokenMapping[_asset], strikePrice: _strikePrice, type: 'PUT', quantity: _quantity, expiration: _expiration, premiumPaid: _premium, positionType: 'Bought', bought: true, executed: false, rawExpiration: _raw })
+                activePositions.push({contractAddr: putOptions[i], tokenName: tokenMapping[_asset], strikePrice: _strikePrice, type: 'PUT', quantity: _quantity, expiration: _expiration, premiumPaid: _premium, positionType: 'Bought', bought: true, executed: false, rawExpiration: Number(_raw) })
             } else {
-                activePositions.push({contractAddr: putOptions[i], tokenName: tokenMapping[_asset], strikePrice: _strikePrice, type: 'PUT', quantity: _quantity, expiration: _expiration, premiumPaid: _premium, positionType: 'Written', bought: _buyer != "0x0000000000000000000000000000000000000000", executed: false,rawExpiration: _raw })
+                activePositions.push({contractAddr: putOptions[i], tokenName: tokenMapping[_asset], strikePrice: _strikePrice, type: 'PUT', quantity: _quantity, expiration: _expiration, premiumPaid: _premium, positionType: 'Written', bought: _buyer != "0x0000000000000000000000000000000000000000", executed: false,rawExpiration: Number(_raw) })
             }
           } else {
             if(_buyer == address) {
-                closedPositions.push({contractAddr: putOptions[i], tokenName: tokenMapping[_asset], strikePrice: _strikePrice, type: 'PUT', quantity: _quantity, expiration: _expiration, premiumPaid: _premium, positionType: 'Bought', bought: true, executed: true, rawExpiration: _raw })
+                closedPositions.push({contractAddr: putOptions[i], tokenName: tokenMapping[_asset], strikePrice: _strikePrice, type: 'PUT', quantity: _quantity, expiration: _expiration, premiumPaid: _premium, positionType: 'Bought', bought: true, executed: true, rawExpiration: Number(_raw) })
             } else {
-                closedPositions.push({contractAddr: putOptions[i], tokenName: tokenMapping[_asset], strikePrice: _strikePrice, type: 'PUT', quantity: _quantity, expiration: _expiration, premiumPaid: _premium, positionType: 'Written', bought: _buyer != "0x0000000000000000000000000000000000000000", executed: true, rawExpiration: _raw })
+                closedPositions.push({contractAddr: putOptions[i], tokenName: tokenMapping[_asset], strikePrice: _strikePrice, type: 'PUT', quantity: _quantity, expiration: _expiration, premiumPaid: _premium, positionType: 'Written', bought: _buyer != "0x0000000000000000000000000000000000000000", executed: true, rawExpiration: Number(_raw) })
             }
           }
         }
@@ -102,8 +103,8 @@ export const getPositions = async (address : any, walletProvider: any, chainId: 
     }
 
   return {
-    active: activePositions,
-    closed: closedPositions
+    active: activePositions.sort((a,b) => a.rawExpiration - b.rawExpiration),
+    closed: closedPositions.sort((a,b) => a.rawExpiration - b.rawExpiration)
   };
 };
 
@@ -128,12 +129,13 @@ export const executeOption = async (walletProvider: any, chainId: any, optionAdd
     await _approve.wait();
   }
 
+  await updatePrices(walletProvider);
   const tx = await optionContract.execute();
   await tx.wait();
   alert("Option executed successfully!");
 };
 
-export const withdrawOption = async (walletProvider: any, chainId: any, optionAddr: string, call: boolean, bought: boolean): Promise<void> => {
+export const withdrawOption = async (walletProvider: any, expired: boolean, optionAddr: string, call: boolean, bought: boolean): Promise<void> => {
   if (!walletProvider) throw new Error('No wallet provider found');
 
   const ethersProvider = new BrowserProvider(walletProvider);
@@ -141,7 +143,7 @@ export const withdrawOption = async (walletProvider: any, chainId: any, optionAd
   
   const optionContract = new Contract(optionAddr, call ? callOptionABI : putOptionABI, signer);
 
-  if(bought == false) {
+  if(!bought && !expired) {
     const tx = await optionContract.cancel();
     await tx.wait();
   } else {

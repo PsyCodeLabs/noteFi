@@ -39,7 +39,7 @@ const Page = () => {
 
   const onBuyClick = async (addr: string, call: boolean) => {
     setLoading(true);
-    setLoadingMessage("Processing purchase, please confirm the transaction...");
+    setLoadingMessage("Processing purchase, please confirm (2) transactions...");
     try {
       await onBuy(walletProvider, chainId, addr, call);
       setLoadingMessage("Updating options...");
