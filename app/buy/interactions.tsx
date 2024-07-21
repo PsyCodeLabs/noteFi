@@ -1,4 +1,4 @@
-import { BrowserProvider, Contract, ethers, formatUnits } from 'ethers';
+import { BrowserProvider, Contract, ethers, formatUnits, ZeroAddress } from 'ethers';
 import { optionFactoryABI } from '@/web3/abi/OptionFactoryABI';
 import { callOptionABI } from '@/web3/abi/CallOptionABI';
 import { putOptionABI } from '@/web3/abi/PutOptionABI';
@@ -51,8 +51,8 @@ export const getOptions = async (address : any, walletProvider : any, chainId : 
         if(!_executed) {
             let _expiration = await _callContract.expiration()
             if(Number(_expiration)  * 1000 > curr_timestamp) {
-                const _bought = await _callContract.bought()
-                if(!_bought) {
+                const _buyer = await _callContract.buyer()
+                if(_buyer == ZeroAddress) {
                     const _inited = await _callContract.inited()
                     if(_inited) {
                         const _creator = await _callContract.creator()
@@ -79,8 +79,8 @@ export const getOptions = async (address : any, walletProvider : any, chainId : 
         if(!_executed) {
             let _expiration = await _putContract.expiration()
             if(Number(_expiration)  * 1000 > curr_timestamp) {
-                const _bought = await _putContract.bought()
-                if(!_bought) {
+                const _buyer = await _putContract.buyer()
+                if(_buyer == ZeroAddress) {
                     const _inited = await _putContract.inited()
                     if(_inited) {
                         const _creator = await _putContract.creator()

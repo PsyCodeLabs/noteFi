@@ -1,5 +1,5 @@
 // Option Factory Address
-export const optionFactory = "0xA5192B03B520aF7214930936C958CF812e361CD3";
+export const optionFactory = "0xd42FdE6daCDCC075c44C1977b57d1a3Fcd0fe8c6";
 
 // Testnet Note Address
 export const noteAddress = "0x03F734Bd9847575fDbE9bEaDDf9C166F880B5E5f";
