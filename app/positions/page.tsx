@@ -38,11 +38,11 @@ const PositionsPage = () => {
   }
   
 
-  const onExecuteClick = async (addr: string, call: boolean) => {
+  const onExecuteClick = async (addr: string, call: boolean, token: string) => {
     setLoading(true);
     setLoadingMessage("Executing option, please confirm (3) transactions...");
     try {
-      await executeOption(walletProvider, chainId, addr, call);
+      await executeOption(walletProvider, token, addr, call);
       await fetchPositions();
     } catch (error) {
       alert("Something went wrong, check console for details");
@@ -108,7 +108,7 @@ const PositionsPage = () => {
       
       <div className="mt-2">
         {position.positionType === 'Bought' && activeTab == "active" && (position.rawExpiration * 1000 > Date.now()) ? (
-          <button className="bg-emerald-500 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded" onClick={() => onExecuteClick(position.contractAddr, position.type === 'CALL')}>
+          <button className="bg-emerald-500 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded" onClick={() => onExecuteClick(position.contractAddr, position.type === 'CALL', position.tokenName)}>
             Execute
           </button>
         ) : "" }

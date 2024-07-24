@@ -17,9 +17,17 @@ export const createOptionCall = async (formData : any, walletProvider : any, cha
 
     const factoryContract = new Contract(optionFactory, optionFactoryABI, signer);
 
+    const _parsedPremium = parseEther(formData.premium);
+    let _parsedQuantity;
+    if(formData.token == "atom") {
+        _parsedQuantity = formData.quantity * (10**6);
+    } else {
+        _parsedQuantity = parseEther(formData.quantity);
+    }
+
     if(formData.type == "CALL") {
 
-        const create = await factoryContract.createCallOption(reverseTokenMapping[formData.token], parseEther(formData.premium), formData.strike, parseEther(formData.quantity), formData.unixExpiration);
+        const create = await factoryContract.createCallOption(reverseTokenMapping[formData.token], _parsedPremium, formData.strike, _parsedQuantity, formData.unixExpiration);
         console.log(create);
         await create.wait();
 
@@ -28,7 +36,7 @@ export const createOptionCall = async (formData : any, walletProvider : any, cha
         const assetContract = new Contract(reverseTokenMapping[formData.token], erc20ABI, signer);
         const callContract = new Contract(callOptions[callOptions.length-1], callOptionABI, signer);
         
-        const _approve = await assetContract.approve(callOptions[callOptions.length-1], parseEther(formData.quantity));
+        const _approve = await assetContract.approve(callOptions[callOptions.length-1], _parsedQuantity);
         console.log(_approve);
         await _approve.wait();
 
@@ -38,7 +46,7 @@ export const createOptionCall = async (formData : any, walletProvider : any, cha
         
         alert("Call Option Created!");
     } else if(formData.type == "PUT") {
-        const create = await factoryContract.createPutOption(reverseTokenMapping[formData.token], parseEther(formData.premium), formData.strike, parseEther(formData.quantity), formData.unixExpiration);
+        const create = await factoryContract.createPutOption(reverseTokenMapping[formData.token], _parsedPremium, formData.strike, _parsedQuantity, formData.unixExpiration);
         console.log(create);
         await create.wait();
 

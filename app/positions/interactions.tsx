@@ -5,7 +5,7 @@ import { putOptionABI } from '@/web3/abi/PutOptionABI';
 import { erc20ABI } from '@/web3/abi/ERC20ABI';
 import { formatTimestamp } from '../buy/interactions';
 import { optionFactory, noteAddress, tokenMapping } from '@/web3/constants';
-import { updatePrices } from '@/web3/Prices';
+import { updatePriceFeed } from '@/web3/Prices';
 
 export interface PositionData {
   contractAddr: string;
@@ -49,7 +49,7 @@ export const getPositions = async (address : any, walletProvider: any, chainId: 
           let _raw = await _callContract.expiration()
           let _expiration = formatTimestamp(_raw)
           let _quantity = await _callContract.quantity()
-          _quantity = formatUnits(_quantity, 18)
+          _quantity = formatUnits(_quantity, tokenMapping[_asset] == "ATOM" ? 6 : 18)
           let _executed = await _callContract.executed()
           if(_executed == false) {
             if(_buyer == address) {
@@ -83,7 +83,7 @@ export const getPositions = async (address : any, walletProvider: any, chainId: 
           let _raw = await _callContract.expiration()
           let _expiration = formatTimestamp(_raw)
           let _quantity = await _callContract.quantity()
-          _quantity = formatUnits(_quantity, 18)
+          _quantity = formatUnits(_quantity, tokenMapping[_asset] == "ATOM" ? 6 : 18)
           let _executed = await _callContract.executed()
           if(_executed == false) {
             if(_buyer == address) {
@@ -108,7 +108,7 @@ export const getPositions = async (address : any, walletProvider: any, chainId: 
   };
 };
 
-export const executeOption = async (walletProvider: any, chainId: any, optionAddr: string, call: boolean): Promise<void> => {
+export const executeOption = async (walletProvider: any, token: string, optionAddr: string, call: boolean): Promise<void> => {
   if (!walletProvider) throw new Error('No wallet provider found');
 
   const ethersProvider = new BrowserProvider(walletProvider);
@@ -129,7 +129,7 @@ export const executeOption = async (walletProvider: any, chainId: any, optionAdd
     await _approve.wait();
   }
 
-  await updatePrices(walletProvider);
+  await updatePriceFeed(walletProvider, token);
   const tx = await optionContract.execute();
   await tx.wait();
   alert("Option executed successfully!");

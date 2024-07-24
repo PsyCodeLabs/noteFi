@@ -64,7 +64,7 @@ export const getOptions = async (address : any, walletProvider : any, chainId : 
                             _premium = formatUnits(_premium, 18)
                             _expiration = formatTimestamp(_expiration)
                             let _quantity = await _callContract.quantity()
-                            _quantity = formatUnits(_quantity, 18)
+                            _quantity = formatUnits(_quantity, tokenMapping[_asset] == "ATOM" ? 6 : 18)
                             data.calls.push({contractAddr: callOptions[i], tokenImg: tokenMapping[_asset], strikePrice: _strikePrice, premium: _premium, expirationDate: _expiration, quantity: _quantity})
                         }
                     }
@@ -93,7 +93,7 @@ export const getOptions = async (address : any, walletProvider : any, chainId : 
                             let _expiration = await _putContract.expiration()
                             _expiration = formatTimestamp(_expiration)
                             let _quantity = await _putContract.quantity()
-                            _quantity = formatUnits(_quantity, 18)
+                            _quantity = formatUnits(_quantity, tokenMapping[_asset] == "ATOM" ? 6 : 18)
                             data.puts.push({contractAddr: putOptions[i], tokenImg: tokenMapping[_asset], strikePrice: _strikePrice, premium: _premium, expirationDate: _expiration, quantity: _quantity})
                         }
                     }

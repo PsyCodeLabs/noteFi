@@ -3,11 +3,12 @@ import Image from 'next/image';
 import Link from 'next/link';
 import eth from '@/public/Ethereum_logo.png'
 import can from '@/public/Canto_logo.png'
+import atom from '@/public/Atom_logo.png'
 
-// Example token data (could be fetched from an API)
 const tokens = [
-  { id: 1, name: "Ethereum", image: eth },  // Ensure path correctness
-  { id: 2, name: "WCANTO", image: can }       // Ensure path correctness
+  { id: 1, name: "Ethereum", image: eth },
+  { id: 2, name: "WCANTO", image: can },
+  { id: 3, name: "Atom", image: atom }
 ];
 export default function TokenCards() {
   return (

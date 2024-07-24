@@ -27,7 +27,8 @@ const OptionForm: React.FC<Props> = ({ params }) => {
 
   const ticker : { [key : string] : string } = {
     "ethereum" : "ETH",
-    "wcanto" : "WCANTO"
+    "wcanto" : "WCANTO",
+    "atom" : "ATOM"
   };
   
 
