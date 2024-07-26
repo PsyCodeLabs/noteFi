@@ -16,22 +16,24 @@ const PositionsPage = () => {
       (async () => {
         await fetchPositions();
       })();
+    } else {
+      alert("Error: Connect Wallet");
     }
   }, [isConnected, walletProvider, chainId, address]);
 
   const fetchPositions = async () => {
+    setLoading(true);
+    setLoadingMessage("Loading Positions...");
     try {
-      setLoading(true);
-      setLoadingMessage("Loading Positions...")
       const data = await getPositions(address, walletProvider, chainId);
       if (typeof data === 'string') {
         console.error(data);
       } else {
         setPositionsData(data);
       }
-      setLoading(false);
     } catch (error) {
       console.error(error);
+    } finally {
       setLoading(false);
       setLoadingMessage('');
     }
@@ -42,10 +44,11 @@ const PositionsPage = () => {
     setLoading(true);
     setLoadingMessage("Executing option, please confirm (3) transactions...");
     try {
+      if(isConnected == false) throw "Connect Wallet";
       await executeOption(walletProvider, token, addr, call);
       await fetchPositions();
     } catch (error) {
-      alert("Something went wrong, check console for details");
+      alert("Error: " + error);
       console.error("Execution failed:", error);
     } finally {
       setLoading(false);
@@ -57,10 +60,11 @@ const PositionsPage = () => {
     setLoading(true);
     setLoadingMessage("Withdrawing option, please confirm (1) transaction...");
     try {
+      if(isConnected == false) throw "Connect Wallet";
       await withdrawOption(walletProvider, expired, addr, call, bought);
       await fetchPositions();
     } catch (error) {
-      alert("Something went wrong, check console for details");
+      alert("Error: " + error);
       console.error("Execution failed:", error);
     } finally {
       setLoading(false);

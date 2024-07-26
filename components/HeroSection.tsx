@@ -21,7 +21,7 @@ function HeroSection() {
               <span className='text-emerald-600'>noteFi,</span> Truly Decentralized Options on Canto
             </h1>  {/* Changed text color to white */}
             <p className="max-w-2xl mb-6 font-light text-gray-400 lg:mb-8 md:text-lg lg:text-xl">
-              Empowering Financial Freedom through Decentralized Options Trading
+              Empowering DeFi Experience Through Decentralized Options Trading
             </p>  {/* Changed text color to light gray */}
             <div className="flex flex-col sm:flex-row sm:space-x-4 gap-3">
               <Link href="/buy" className="inline-flex items-center justify-center w-full sm:w-auto px-5 py-3 text-base font-medium text-center text-white rounded-lg bg-emerald-700 hover:bg-emerald-800 focus:ring-4 focus:ring-emerald-300 dark:focus:ring-emerald-900">

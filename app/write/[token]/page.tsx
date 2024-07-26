@@ -37,9 +37,11 @@ const OptionForm: React.FC<Props> = ({ params }) => {
       setLoading(true);
       setLoadingMessage("Fetching Price...")
       try {
+        if(isConnected == false) throw "Connect Wallet";
         const _price: any = await priceMulti(params.token.toLowerCase());
         setLivePrice(_price);
       } catch (error) {
+        alert("Error: " + error);
         console.error(error);
       } finally {
         setLoadingMessage('')
@@ -65,6 +67,7 @@ const OptionForm: React.FC<Props> = ({ params }) => {
     setLoadingMessage("Writing option, please confirm (3) transactions...")
     try {
       if (!strikePrice || !premium || !expiration || !quantity) {
+        if(isConnected == false) throw "Connect Wallet";
         alert('All fields are required.');
         setLoading(false);
         return;
@@ -85,7 +88,7 @@ const OptionForm: React.FC<Props> = ({ params }) => {
       console.log('Form Data:', formData);
       await createOptionCall(formData, walletProvider, chainId);
     } catch (error) {
-      alert("Something went wrong!, please try again or contact support")
+      alert("Error: " + error);
       console.error(error);
     } finally {
       setLoadingMessage('')

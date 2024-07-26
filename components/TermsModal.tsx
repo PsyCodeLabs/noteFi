@@ -47,7 +47,7 @@ const TermsModal = () => {
                     </div>
                     <div className="flex items-center p-5 border-t border-gray-600">
                         <button type="button" className="w-full mr-3 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 focus:ring-4 focus:outline-none focus:ring-emerald-800 rounded-lg px-5 py-2.5 text-center" onClick={handleAccept}>
-                            I Understad
+                            I Understand
                         </button>
                     </div>
                 </div>

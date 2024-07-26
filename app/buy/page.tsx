@@ -16,22 +16,26 @@ const Page = () => {
   });
 
   useEffect(() => {
-    if (isConnected && walletProvider) {
+    if (walletProvider) {
       (async () => {
         await fetchOptions();
       })();
+    } else {
+      alert("Error: Connect Wallet");
     }
   }, [isConnected, walletProvider, chainId, address]);
 
   const fetchOptions = async () => {
+    setLoading(true);
+    setLoadingMessage("Fetching Options...");
     try {
-      setLoading(true);
-      setLoadingMessage("Fetching Options...")
+      if(isConnected == false) throw "Connect Wallet";
       const data: any = await getOptions(address, walletProvider, chainId);
       setOptionsData(data);
-      setLoading(false);
     } catch (error) {
+      alert("Error: " + error);
       console.error(error);
+    } finally {
       setLoading(false);
       setLoadingMessage('');
     }
@@ -41,10 +45,12 @@ const Page = () => {
     setLoading(true);
     setLoadingMessage("Processing purchase, please confirm (2) transactions...");
     try {
+      if(isConnected == false) throw "Connect Wallet";
       await onBuy(walletProvider, chainId, addr, call);
       setLoadingMessage("Updating options...");
       await fetchOptions();
     } catch (error) {
+      alert("Error: " + error);
       console.error("Failed to buy option:", error);
       setLoadingMessage("Failed to process transaction, please try again.");
     } finally {
