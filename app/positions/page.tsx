@@ -83,11 +83,10 @@ const PositionsPage = () => {
           {position.tokenName}
         </h3>
         <div className="flex space-x-2">
-          <span className="px-3 py-1 rounded-full text-sm font-semibold bg-yellow-200 text-yellow-800">
+          <span className={`px-3 py-1 rounded-full text-sm font-semibold border-2 border-white ${position.positionType == 'Bought' ? 'text-green-500' : 'text-red-500'}`}>
             {position.positionType}
           </span>
-          <span className={`px-3 py-1 rounded-full text-sm font-semibold
-      ${position.type === 'CALL' ? 'bg-green-500 text-green-200' : 'bg-red-200 text-red-800'}`}>
+          <span className={`px-3 py-1 rounded-full text-sm font-semibold ${position.type === 'CALL' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}`}>
             {position.type}
           </span>
         </div>
@@ -155,13 +154,13 @@ const TabButtons = ({ activeTab, setActiveTab }: { activeTab: 'active' | 'closed
   <div className="flex justify-center mb-8">
     <button
       onClick={() => setActiveTab('active')}
-      className={`px-6 py-2 text-lg font-medium rounded-l-lg transition-colors duration-300 ${activeTab === 'active' ? 'bg-emerald-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
+      className={`px-6 py-2 text-lg font-medium rounded-l-lg transition-colors duration-300 border-2 ${activeTab === 'active' ? 'bg-gray-900 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
     >
       Active Positions
     </button>
     <button
       onClick={() => setActiveTab('closed')}
-      className={`px-6 py-2 text-lg font-medium rounded-r-lg transition-colors duration-300 ${activeTab === 'closed' ? 'bg-emerald-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
+      className={`px-6 py-2 text-lg font-medium rounded-r-lg transition-colors duration-300 border-2 ${activeTab === 'closed' ? 'bg-gray-900 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
     >
       Closed Positions
     </button>

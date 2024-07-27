@@ -64,7 +64,7 @@ export default function Navbar() {
         <Link href="/" onClick={closeMenu}>
           <div className="flex items-center space-x-3 rtl:space-x-reverse cursor-pointer">
             <Image src={logo} className="w-10 h-10" alt="noteFi Logo" />
-            <span className="self-center text-2xl font-semibold whitespace-nowrap text-white">noteFi</span>
+            <span className="self-center text-2xl font-semibold whitespace-nowrap text-white" style={{margin:"auto", paddingLeft:"3%"}}>oteFi</span>
           </div>
         </Link>
         <div className="flex items-center lg:order-2">
