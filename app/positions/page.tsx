@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useWeb3ModalProvider, useWeb3ModalAccount } from '@web3modal/ethers/react';
 import { getPositions, executeOption, withdrawOption, PositionData } from './interactions';
 import LoadingScreen from "@/components/LoadingScreen";
+import Modal from '@/components/Modal';
 
 const PositionsPage = () => {
   const { address, chainId, isConnected } = useWeb3ModalAccount();
@@ -11,6 +12,11 @@ const PositionsPage = () => {
   const [positionsData, setPositionsData] = useState<{ active: PositionData[], closed: PositionData[] }>({ active: [], closed: [] });
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingMessage, setLoadingMessage] = useState<string>("");
+  const [showPremiumModal, setShowPremiumModal] = useState(false);
+  const [showTransferModal, setShowTransferModal] = useState(false);
+  const [newPremium, setNewPremium] = useState('');
+  const [newBuyerAddress, setNewBuyerAddress] = useState('');
+  const [selectedPosition, setSelectedPosition] = useState<PositionData | null>(null);
 
   useEffect(() => {
     if (isConnected && walletProvider) {
@@ -70,11 +76,57 @@ const PositionsPage = () => {
     }
   }
 
+  const onAdjustPremiumClick = (position: PositionData) => {
+    setSelectedPosition(position);
+    setShowPremiumModal(true);
+  };
+
+  const onTransferBuyerClick = (position: PositionData) => {
+    setSelectedPosition(position);
+    setShowTransferModal(true);
+  };
+
+  const handleAdjustPremium = async () => {
+    if (!selectedPosition || !newPremium) return;
+    setLoading(true);
+    setLoadingMessage("Adjusting premium, please confirm transaction...");
+    try {
+      if (!isConnected) throw "Connect Wallet";
+      // TODO: Implement adjustPremium function
+      await fetchPositions();
+    } catch (error) {
+      alert("Error: " + error);
+      console.error("Adjust premium failed:", error);
+    } finally {
+      setLoading(false);
+      setLoadingMessage('');
+      setShowPremiumModal(false);
+    }
+  };
+
+  const handleTransferBuyer = async () => {
+    if (!selectedPosition || !newBuyerAddress) return;
+    setLoading(true);
+    setLoadingMessage("Transferring buyer, please confirm transaction...");
+    try {
+      if (!isConnected) throw "Connect Wallet";
+      // TODO: Implement transferBuyer function
+      await fetchPositions();
+    } catch (error) {
+      alert("Error: " + error);
+      console.error("Transfer buyer failed:", error);
+    } finally {
+      setLoading(false);
+      setLoadingMessage('');
+      setShowTransferModal(false);
+    }
+  };
+
   const renderPosition = (position: PositionData) => (
     <div
       key={position.contractAddr}
       className={`bg-gray-800 rounded-lg shadow-md p-6 mb-6 transition-all duration-300 hover:shadow-lg
-        ${position.type === 'CALL'
+      ${position.type === 'CALL'
           ? 'border-b-4 border-green-500'
           : 'border-b-4 border-red-500'}`}
     >
@@ -97,20 +149,35 @@ const PositionsPage = () => {
         <InfoItem label="Expiration" value={position.expiration} />
         <InfoItem label="Premium" value={`$${position.premiumPaid}`} />
       </div>
-      <div className="flex justify-end">
-        {position.positionType === 'Bought' && activeTab === "active" && (position.rawExpiration * 1000 > Date.now()) ? (
+      <div className="flex flex-wrap justify-end gap-3 mt-4">
+        {position.positionType === 'Written' && activeTab === 'active' && !position.bought && (
+          <ActionButton
+            onClick={() => onAdjustPremiumClick(position)}
+            label="Adjust Premium"
+            className="bg-blue-500 hover:bg-blue-700"
+          />
+        )}
+        {position.positionType === 'Bought' && activeTab === 'active' && position.rawExpiration * 1000 > Date.now() && (
+          <ActionButton
+            onClick={() => onTransferBuyerClick(position)}
+            label="Transfer Buyer"
+            className="bg-blue-500 hover:bg-blue-700"
+          />
+        )}
+        {position.positionType === 'Bought' && activeTab === "active" && (position.rawExpiration * 1000 > Date.now()) && (
           <ActionButton
             onClick={() => onExecuteClick(position.contractAddr, position.type === 'CALL', position.tokenName)}
             label="Execute"
             className="bg-emerald-500 hover:bg-emerald-700"
           />
-        ) : position.positionType !== 'Bought' && activeTab === 'active' && (!position.bought || (position.rawExpiration * 1000 < Date.now())) ? (
+        )}
+        {position.positionType !== 'Bought' && activeTab === 'active' && (!position.bought || (position.rawExpiration * 1000 < Date.now())) && (
           <ActionButton
             onClick={() => onWithdrawClick(position.contractAddr, position.rawExpiration * 1000 < Date.now(), position.type === 'CALL', position.bought)}
             label="Withdraw"
             className="bg-red-500 hover:bg-red-700"
           />
-        ) : null}
+        )}
       </div>
     </div>
   );
@@ -130,6 +197,39 @@ const PositionsPage = () => {
           </div>
         </div>
       )}
+      <Modal show={showPremiumModal} onClose={() => setShowPremiumModal(false)}>
+        <h2 className="text-2xl font-bold mb-6 text-white">Adjust Premium</h2>
+        <input
+          type="number"
+          value={newPremium}
+          onChange={(e) => setNewPremium(e.target.value)}
+          placeholder="Enter new premium in NOTE"
+          className="w-full p-3 mb-6 bg-gray-700 text-white border border-gray-600 rounded text-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+        <button
+          onClick={handleAdjustPremium}
+          className="w-full bg-blue-500 text-white px-4 py-3 rounded text-lg font-semibold hover:bg-blue-600 transition duration-300"
+        >
+          Confirm
+        </button>
+      </Modal>
+
+      <Modal show={showTransferModal} onClose={() => setShowTransferModal(false)}>
+        <h2 className="text-2xl font-bold mb-6 text-white">Transfer Buyer</h2>
+        <input
+          type="text"
+          value={newBuyerAddress}
+          onChange={(e) => setNewBuyerAddress(e.target.value)}
+          placeholder="Enter new buyer address"
+          className="w-full p-3 mb-6 bg-gray-700 text-white border border-gray-600 rounded text-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+        <button
+          onClick={handleTransferBuyer}
+          className="w-full bg-blue-500 text-white px-4 py-3 rounded text-lg font-semibold hover:bg-blue-600 transition duration-300"
+        >
+          Confirm
+        </button>
+      </Modal>
     </div>
   );
 };
