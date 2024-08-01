@@ -1,7 +1,8 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { useWeb3ModalProvider, useWeb3ModalAccount } from '@web3modal/ethers/react';
-import { getPositions, executeOption, withdrawOption, PositionData } from './interactions';
+import { isAddress } from 'ethers';
+import { getPositions, executeOption, withdrawOption, PositionData, adjustPremiumInteraction, transferBuyerInteraction } from './interactions';
 import LoadingScreen from "@/components/LoadingScreen";
 import Modal from '@/components/Modal';
 
@@ -92,7 +93,9 @@ const PositionsPage = () => {
     setLoadingMessage("Adjusting premium, please confirm transaction...");
     try {
       if (!isConnected) throw "Connect Wallet";
-      // TODO: Implement adjustPremium function
+      setShowPremiumModal(false);
+      await adjustPremiumInteraction(walletProvider, selectedPosition.contractAddr, selectedPosition.type == "CALL", newPremium)
+      setLoadingMessage('Loading Positions...');
       await fetchPositions();
     } catch (error) {
       alert("Error: " + error);
@@ -100,7 +103,6 @@ const PositionsPage = () => {
     } finally {
       setLoading(false);
       setLoadingMessage('');
-      setShowPremiumModal(false);
     }
   };
 
@@ -110,7 +112,10 @@ const PositionsPage = () => {
     setLoadingMessage("Transferring buyer, please confirm transaction...");
     try {
       if (!isConnected) throw "Connect Wallet";
-      // TODO: Implement transferBuyer function
+      if (!isAddress(newBuyerAddress)) throw "Invalid Address";
+      setShowTransferModal(false);
+      await transferBuyerInteraction(walletProvider, selectedPosition.contractAddr, selectedPosition.type == "CALL", newBuyerAddress);
+      setLoadingMessage('Loading Positions...');
       await fetchPositions();
     } catch (error) {
       alert("Error: " + error);
@@ -118,7 +123,6 @@ const PositionsPage = () => {
     } finally {
       setLoading(false);
       setLoadingMessage('');
-      setShowTransferModal(false);
     }
   };
 
@@ -150,26 +154,26 @@ const PositionsPage = () => {
         <InfoItem label="Premium" value={`$${position.premiumPaid}`} />
       </div>
       <div className="flex flex-wrap justify-end gap-3 mt-4">
-        {position.positionType === 'Written' && activeTab === 'active' && !position.bought && (
+        {position.positionType === 'Written' && activeTab === 'active' && !position.bought && (position.rawExpiration * 1000 > Date.now()) && (
           <ActionButton
             onClick={() => onAdjustPremiumClick(position)}
             label="Adjust Premium"
             className="bg-blue-500 hover:bg-blue-700"
           />
         )}
-        {position.positionType === 'Bought' && activeTab === 'active' && position.rawExpiration * 1000 > Date.now() && (
+        {position.positionType === 'Bought' && activeTab === "active" && (position.rawExpiration * 1000 > Date.now()) && (
+          <>
           <ActionButton
             onClick={() => onTransferBuyerClick(position)}
             label="Transfer Buyer"
             className="bg-blue-500 hover:bg-blue-700"
           />
-        )}
-        {position.positionType === 'Bought' && activeTab === "active" && (position.rawExpiration * 1000 > Date.now()) && (
           <ActionButton
             onClick={() => onExecuteClick(position.contractAddr, position.type === 'CALL', position.tokenName)}
             label="Execute"
             className="bg-emerald-500 hover:bg-emerald-700"
           />
+          </>
         )}
         {position.positionType !== 'Bought' && activeTab === 'active' && (!position.bought || (position.rawExpiration * 1000 < Date.now())) && (
           <ActionButton
