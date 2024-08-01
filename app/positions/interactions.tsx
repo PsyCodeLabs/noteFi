@@ -1,4 +1,4 @@
-import { BrowserProvider, Contract, ethers, formatUnits } from 'ethers';
+import { BrowserProvider, Contract, parseEther, formatUnits } from 'ethers';
 import { callOptionABI } from '@/web3/abi/CallOptionABI';
 import { optionFactoryABI } from '@/web3/abi/OptionFactoryABI';
 import { putOptionABI } from '@/web3/abi/PutOptionABI';
@@ -153,3 +153,31 @@ export const withdrawOption = async (walletProvider: any, expired: boolean, opti
 
   alert("Option withdrawn successfully!");
 };
+
+export const adjustPremiumInteraction = async (walletProvider: any, optionAddr: string, call: boolean, newVal: string): Promise<void> => {
+  if (!walletProvider) throw new Error('No wallet provider found');
+
+  const ethersProvider = new BrowserProvider(walletProvider);
+  const signer = await ethersProvider.getSigner();
+  
+  const optionContract = new Contract(optionAddr, call ? callOptionABI : putOptionABI, signer);
+
+  const tx = await optionContract.adjustPremium(parseEther(newVal));
+  await tx.wait();
+
+  alert("Premium adjusted successfully!");
+}
+
+export const transferBuyerInteraction = async (walletProvider: any, optionAddr: string, call: boolean, newBuyer: string): Promise<void> => {
+  if (!walletProvider) throw new Error('No wallet provider found');
+
+  const ethersProvider = new BrowserProvider(walletProvider);
+  const signer = await ethersProvider.getSigner();
+  
+  const optionContract = new Contract(optionAddr, call ? callOptionABI : putOptionABI, signer);
+
+  const tx = await optionContract.transfer(newBuyer);
+  await tx.wait();
+
+  alert("Buyer transferred successfully!");
+}
